@@ -67,7 +67,7 @@ $$
 
 When using the **extrinsic** (world-fixed) \(X \rightarrow Y \rightarrow Z\) convention, the rotations are applied **about the fixed world axes** in the specified order.  
 
-For a point \(\mathbf{p}\):
+For a point $$\(\mathbf{p}\)$$:
 
 1. Rotate about the X-axis:  
 $$\[
