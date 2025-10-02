@@ -20,9 +20,9 @@ The choice of axes and the order of rotations defines the **convention** (e.g., 
 
 Mathematically, Euler angles $$(\phi, \theta, \psi)$$ are defined as:
 
-- **Roll (\(\phi\))**: rotation about the final **x-axis**  
-- **Pitch (\(\theta\))**: rotation about the new **y-axis**  
-- **Yaw (\(\psi\))**: rotation about the fixed **z-axis**  
+- **Roll $$(\phi\)$$**: rotation about the final **x-axis**  
+- **Pitch $$(\theta\)$$**: rotation about the new **y-axis**  
+- **Yaw $$(\psi\)$$**: rotation about the fixed **z-axis**  
 
 ---
 
