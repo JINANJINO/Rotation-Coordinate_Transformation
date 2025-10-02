@@ -162,14 +162,14 @@ $$
 
 ### 2.2 Quaternion Rotation of a Vector
 
-If a vector \(\mathbf{v}\) is represented as a **pure quaternion** $$\(v_q = 0 + v_x i + v_y j + v_z k\)$$,  
-then the rotated vector \(\mathbf{v}_{\text{rot}}\) is obtained via quaternion multiplication:
+If a vector $$\(\mathbf{v}\)$$ is represented as a **pure quaternion** $$\(v_q = 0 + v_x i + v_y j + v_z k\)$$,  
+then the rotated vector $$\(\mathbf{v}_{\text{rot}}\)$$ is obtained via quaternion multiplication:
 
 $$
 v' = q \otimes v_q \otimes q^*
 $$
 
-where \(q^*\) is the **conjugate** of \(q\), and \(\otimes\) denotes quaternion multiplication.
+where $$\(q^*\)$$ is the **conjugate** of $$\(q\)$$, and $$\(\otimes\)$$ denotes quaternion multiplication.
 
 ---
 
@@ -290,22 +290,22 @@ $$
 \end{bmatrix}.
 $$
 
-Each row represents the \((x, y)\) coordinates of a vertex in the world frame.  
+Each row represents the $$\(x, y)$$ coordinates of a vertex in the world frame.  
 The goal is to transform these points into a **viewer frame** that can move and rotate relative to the world.
 
 ---
 
 ## 2. 2D Coordinate Transformation
 
-A **2D rigid-body transformation** consists of a rotation \(\theta\) and a translation \(\mathbf{t} = [t_x, t_y]^T\).  
-The transformation from **world coordinates** \(\mathbf{p}_w\) to **viewer coordinates** \(\mathbf{p}_v\) is:
+A **2D rigid-body transformation** consists of a rotation $$\(\theta\)$$ and a translation $$\(\mathbf{t} = [t_x, t_y]^T\)$$.  
+The transformation from **world coordinates** $$\(\mathbf{p}_w\)$$ to **viewer coordinates** $$\(\mathbf{p}_v\)$$ is:
 
 $$
 \mathbf{p}_v = 
 R(\theta) \, (\mathbf{p}_w - \mathbf{t}),
 $$
 
-where \(R(\theta)\) is the **2D rotation matrix**:
+where $$\(R(\theta)\)$$ is the **2D rotation matrix**:
 
 $$
 R(\theta) =
@@ -315,8 +315,8 @@ R(\theta) =
 \end{bmatrix}.
 $$
 
-- \(\mathbf{t}\) is the **translation of the viewer** in the world frame.  
-- \(\theta\) is the **rotation of the viewer frame** relative to the world frame.  
+- $$\(\mathbf{t}\)$$ is the **translation of the viewer** in the world frame.  
+- $$\(\theta\)$$ is the **rotation of the viewer frame** relative to the world frame.  
 
 > In the code, each vertex of the square is transformed individually using this formula, and the resulting coordinates are plotted in real time.
 
@@ -329,13 +329,13 @@ Rotations can be interpreted in two different conventions:
 1. **Extrinsic Rotation:**  
    - The axes of rotation are fixed in the **world frame**.  
    - Each successive rotation is applied **about the world axes**, regardless of previous rotations.
-   - Example: \( \mathbf{p}' = R_z(\theta_z) R_y(\theta_y) R_x(\theta_x) \mathbf{p} \)  
+   - Example: $$\( \mathbf{p}' = R_z(\theta_z) R_y(\theta_y) R_x(\theta_x) \mathbf{p} \)$$  
      Here, rotations are applied **in world coordinates**.
 
 2. **Intrinsic Rotation:**  
    - The axes of rotation are attached to the **moving frame** (object).  
    - Each successive rotation is applied **about the current, rotated axes**.
-   - Example: \( \mathbf{p}' = R_x(\theta_x) R_y(\theta_y) R_z(\theta_z) \mathbf{p} \)  
+   - Example: $$\( \mathbf{p}' = R_x(\theta_x) R_y(\theta_y) R_z(\theta_z) \mathbf{p} \)$$  
      Here, rotations are applied **in the object’s local frame**.
 
 In the context of this viewer example:
