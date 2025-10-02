@@ -63,24 +63,45 @@ $$
 
 ---
 
-### 1.2 Euler Angle Rotation Matrix (X–Y–Z Convention)
+### 1.2 Euler Angle Rotation Matrix (X–Y–Z Convention) 
 
-Using the extrinsic $$\(X \rightarrow Y \rightarrow Z\)$$ convention, the overall rotation matrix is:
+When using the **extrinsic** (world-fixed) \(X \rightarrow Y \rightarrow Z\) convention, the rotations are applied **about the fixed world axes** in the specified order.  
 
-$$
-R(\alpha,\beta,\gamma) = R_x(\alpha)R_y(\beta)R_z(\gamma)
-$$
+For a point \(\mathbf{p}\):
 
-By multiplying the component matrices, the resulting rotation matrix is:
+1. Rotate about the X-axis:  
+$$\[
+\mathbf{p}' = R_x(\alpha) \mathbf{p}
+\]$$
 
-$$
-R(\alpha,\beta,\gamma) =
+2. Then rotate the result about the Y-axis:  
+$$\[
+\mathbf{p}'' = R_y(\beta) \mathbf{p}' = R_y(\beta) R_x(\alpha) \mathbf{p}
+\]$$
+
+3. Finally, rotate about the Z-axis:  
+$$\[
+\mathbf{p}''' = R_z(\gamma) \mathbf{p}'' = R_z(\gamma) R_y(\beta) R_x(\alpha) \mathbf{p}
+\]$$
+
+Hence, the **overall rotation matrix** for extrinsic $$X–Y–Z$$ rotations is:
+
+$$\[
+R_{\text{extrinsic}}(\alpha,\beta,\gamma) = R_z(\gamma) \, R_y(\beta) \, R_x(\alpha)=
 \begin{bmatrix}
-\cos\beta\cos\gamma & -\cos\beta\sin\gamma & \sin\beta \\
-\cos\alpha\sin\gamma + \sin\alpha\sin\beta\cos\gamma & \cos\alpha\cos\gamma - \sin\alpha\sin\beta\sin\gamma & -\sin\alpha\cos\beta \\
-\sin\alpha\sin\gamma - \cos\alpha\sin\beta\cos\gamma & \sin\alpha\cos\gamma + \cos\alpha\sin\beta\sin\gamma & \cos\alpha\cos\beta
+\cos\beta \cos\gamma & \sin\alpha \sin\beta \cos\gamma - \cos\alpha \sin\gamma & \cos\alpha \sin\beta \cos\gamma + \sin\alpha \sin\gamma \\
+\cos\beta \sin\gamma & \sin\alpha \sin\beta \sin\gamma + \cos\alpha \cos\gamma & \cos\alpha \sin\beta \sin\gamma - \sin\alpha \cos\gamma \\
+-\sin\beta & \sin\alpha \cos\beta & \cos\alpha \cos\beta
 \end{bmatrix}
-$$
+\]$$
+
+> **Note:**  
+> - The previously presented matrix  
+> $$\(\mathbf{R} = R_x(\alpha) R_y(\beta) R_z(\gamma)\)$$  
+> corresponds instead to an **intrinsic rotation** (rotations about the moving object's axes, $$Z–Y–X$$ sequence).  
+> - Extrinsic rotations are applied **in reverse multiplication order** compared to intrinsic rotations.
+
+
 
 ---
 
@@ -152,7 +173,7 @@ where \(q^*\) is the **conjugate** of \(q\), and \(\otimes\) denotes quaternion 
 
 ---
 
-### 3.3 Connection to Rodrigues' Rotation Formula
+### 2.3 Connection to Rodrigues' Rotation Formula
 
 Expanding the quaternion multiplication above leads to:
 
@@ -251,3 +272,121 @@ This setup allows users to **intuitively explore the effects of rotations and tr
 
 
 [Screencast from 10-02-2025 11:28:26 PM.webm](https://github.com/user-attachments/assets/4cb45f96-e08b-4f70-8b2f-911bf1b93c50)
+
+---
+
+# Coordinate Transformation: 
+## 1. World and Object Coordinates
+
+Consider a square object defined in the **world frame**:
+
+$$
+\mathbf{P}_{\text{world}} =
+\begin{bmatrix}
+-0.5 & -0.5 \\
+0.5 & -0.5 \\
+0.5 & 0.5 \\
+-0.5 & 0.5
+\end{bmatrix}.
+$$
+
+Each row represents the \((x, y)\) coordinates of a vertex in the world frame.  
+The goal is to transform these points into a **viewer frame** that can move and rotate relative to the world.
+
+---
+
+## 2. 2D Coordinate Transformation
+
+A **2D rigid-body transformation** consists of a rotation \(\theta\) and a translation \(\mathbf{t} = [t_x, t_y]^T\).  
+The transformation from **world coordinates** \(\mathbf{p}_w\) to **viewer coordinates** \(\mathbf{p}_v\) is:
+
+$$
+\mathbf{p}_v = 
+R(\theta) \, (\mathbf{p}_w - \mathbf{t}),
+$$
+
+where \(R(\theta)\) is the **2D rotation matrix**:
+
+$$
+R(\theta) =
+\begin{bmatrix}
+\cos\theta & \sin\theta \\
+-\sin\theta & \cos\theta
+\end{bmatrix}.
+$$
+
+- \(\mathbf{t}\) is the **translation of the viewer** in the world frame.  
+- \(\theta\) is the **rotation of the viewer frame** relative to the world frame.  
+
+> In the code, each vertex of the square is transformed individually using this formula, and the resulting coordinates are plotted in real time.
+
+---
+
+## 3. Extrinsic vs. Intrinsic Rotations
+
+Rotations can be interpreted in two different conventions:
+
+1. **Extrinsic Rotation:**  
+   - The axes of rotation are fixed in the **world frame**.  
+   - Each successive rotation is applied **about the world axes**, regardless of previous rotations.
+   - Example: \( \mathbf{p}' = R_z(\theta_z) R_y(\theta_y) R_x(\theta_x) \mathbf{p} \)  
+     Here, rotations are applied **in world coordinates**.
+
+2. **Intrinsic Rotation:**  
+   - The axes of rotation are attached to the **moving frame** (object).  
+   - Each successive rotation is applied **about the current, rotated axes**.
+   - Example: \( \mathbf{p}' = R_x(\theta_x) R_y(\theta_y) R_z(\theta_z) \mathbf{p} \)  
+     Here, rotations are applied **in the object’s local frame**.
+
+In the context of this viewer example:
+
+- The **viewer moving and rotating** is equivalent to a **passive transformation**, often treated as an **extrinsic rotation**: the world appears to rotate relative to the viewer.  
+- Conversely, **rotating the object itself** in a fixed world frame is treated as an **intrinsic rotation**.
+
+The repository also demonstrates **2D coordinate transformations** from the perspective of a **viewer frame**, distinguishing between **active (object moves)** and **passive (viewer moves)** transformations.
+
+---
+## 4. Coordinate Transformation: Passive vs. Active
+
+### 4.1 Passive Transformation (Viewer Frame Moves)
+
+In a passive transformation, the object remains stationary in the world frame, while the **viewer or reference frame moves**. This can be mathematically expressed as:
+
+$$
+\mathbf{p}_v = R(\theta_v) (\mathbf{p}_w - \mathbf{t}_v),
+$$
+
+where:  
+
+- $$\(\mathbf{p}_w\)$$ is the point in the world frame.  
+- $$\(\mathbf{p}_v\)$$ is the transformed point in the viewer frame.  
+- $$\(R(\theta_v)\)$$ is the 2D rotation of the viewer frame.  
+- $$\(\mathbf{t}_v = [t_x, t_y]^T\)$$ is the translation of the viewer frame.
+
+This approach illustrates **extrinsic rotation**, where the world appears to rotate relative to a fixed observer.
+
+### 4.2 Active Transformation (Object Moves)
+
+Conversely, in an active transformation, the **object itself moves** within a fixed world frame:
+
+$$
+\mathbf{p}_w' = R(\theta) \mathbf{p}_{\text{local}} + \mathbf{t},
+$$
+
+where the translation and rotation are applied **directly to the object’s local coordinates**.  
+
+This corresponds to **intrinsic rotation**, as the rotations are performed in the object’s own frame.
+
+### 4.3 Key Comparison
+
+| Transformation Type | Moving Entity | Interpretation | Rotation Convention |
+|--------------------|---------------|----------------|-------------------|
+| Passive             | Viewer/Frame  | World appears to move relative to the observer | Extrinsic |
+| Active              | Object        | Object moves in world coordinates | Intrinsic |
+
+- The **interactive controls** for the viewer vs. object are identical in terms of key mappings but produce conceptually different results.
+- These visualizations help reinforce the understanding of **coordinate frames, rotation order, and reference frames** in 2D transformations.
+
+---
+
+By combining **interactive controls** with **coordinate transformations**, users can experiment with both **active object movement** and **passive frame movement**, gaining an intuitive grasp of 2D rigid-body motion.
